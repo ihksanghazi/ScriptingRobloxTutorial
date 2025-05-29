@@ -19,7 +19,7 @@ Semua itu dilakukan dengan **kode Lua**, bahasa yang dipakai di Roblox Studio.
 ---
 
 ## 🧠 Apa yang Akan Kamu Pelajari?
-Di kelas ini, kita akan belajar **bagian scripting dari game petualangan**, mirip seperti **Blox Fruits**. Kita akan buat versi sederhananya dulu (namanya: MVP — Minimum Viable Product).
+Di kelas ini, kita akan belajar **bagian scripting dari game petualangan**, mirip seperti **Blox Fruits**. Kita akan buat versi sederhananya dulu
 
 Kamu akan belajar:
 - Cara membuat karakter punya kekuatan buah 🍎
