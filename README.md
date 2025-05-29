@@ -50,6 +50,6 @@ Kita akan belajar dalam **32 pertemuan**. Setiap pertemuan berisi:
 ## 🤝 Siap Belajar dan Bersenang-senang?
 Kalau kamu suka game dan ingin membuat game sendiri, kamu di tempat yang tepat. Yuk, kita mulai perjalanan seru ini jadi **game developer cilik!**
 
-➡️ Lanjut ke [Pertemuan 1 - Pengenalan Scripting di Roblox Studio](./meeting-1.md)
+➡️ Lanjut ke [Pertemuan 1 - Pengenalan Scripting di Roblox Studio]([./meeting-1.md](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_1)
 
 ---
