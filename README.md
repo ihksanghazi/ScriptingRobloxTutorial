@@ -1,55 +1,37 @@
-# 👋 Selamat Datang di Kelas Scripting Game Roblox!
+# 🧠 Meeting 1: Pengenalan Scripting di Roblox Studio
 
-## 🎮 Apa Itu Roblox?
-Roblox adalah platform tempat kita bisa **bermain dan membuat game sendiri**. Di dalam Roblox, ada jutaan game, dan banyak di antaranya dibuat oleh anak-anak dan remaja seperti kamu!
+## 🎯 Tujuan
 
----
-
-## 💡 Apa Itu Scripting?
-Scripting adalah menulis **kode atau perintah** supaya game kamu bisa hidup dan berjalan sesuai keinginan.
-
-Contohnya:
-- Menyerang musuh saat tombol ditekan ✅  
-- Munculkan bola api 🔥  
-- Buat musuh bergerak sendiri 🤖  
-- Naik level saat menang 🆙  
-
-Semua itu dilakukan dengan **kode Lua**, bahasa yang dipakai di Roblox Studio.
+- Memahami perbedaan antara Script, LocalScript, dan ModuleScript.
+- Menulis script pertama di Roblox Studio.
+- Mengenal struktur dasar project Roblox.
 
 ---
 
-## 🧠 Apa yang Akan Kamu Pelajari?
-Di kelas ini, kita akan belajar **bagian scripting dari game petualangan**, mirip seperti **Blox Fruits**. Kita akan buat versi sederhananya dulu
+## 🗂️ Materi
 
-Kamu akan belajar:
-- Cara membuat karakter punya kekuatan buah 🍎
-- Cara membuat musuh bisa dilawan ⚔️
-- Cara naik level & menyelesaikan misi 🎯
-- Cara membuat skill dengan tombol Z dan X 🔘
-- Cara menampilkan darah (HP) dan EXP 🟥🟦
+### 1. Apa itu Scripting di Roblox?
 
----
+Scripting adalah cara untuk mengontrol game menggunakan bahasa pemrograman Lua. Semua logika game seperti menyerang, makan buah, atau naik level ditulis dalam kode.
 
-## 📅 Berapa Lama Belajarnya?
-Kita akan belajar dalam **32 pertemuan**. Setiap pertemuan berisi:
-- Penjelasan singkat 📖  
-- Praktik langsung di Roblox Studio 🎮  
-- Latihan mandiri 🛠️  
-- Tantangan kecil di akhir sesi ✅  
+### 2. Jenis Script di Roblox
+
+| Jenis          | Letak    | Akses                       | Kegunaan                           |
+| -------------- | -------- | --------------------------- | ---------------------------------- |
+| `Script`       | Server   | Bisa akses semua pemain     | Logika server (damage, spawn, dll) |
+| `LocalScript`  | Client   | Hanya pemain itu sendiri    | GUI, animasi, tombol, input        |
+| `ModuleScript` | Reusable | Untuk menyimpan fungsi/data | Digunakan oleh Script/LocalScript  |
 
 ---
 
-## 🛠️ Apa yang Dibutuhkan?
-1. **Laptop atau komputer** 💻  
-2. **Koneksi internet** 🌐  
-3. **Roblox Studio (gratis)** – [Download di sini](https://www.roblox.com/create)  
-4. Akun Roblox (jika belum punya, minta bantuan orang tua untuk buat) 👨‍👩‍👧
+## 🛠️ Praktik: Membuat Script Pertama
 
----
+### Langkah:
 
-## 🤝 Siap Belajar dan Bersenang-senang?
-Kalau kamu suka game dan ingin membuat game sendiri, kamu di tempat yang tepat. Yuk, kita mulai perjalanan seru ini jadi **game developer cilik!**
+1. Buka **Roblox Studio** dan buat **Baseplate** baru.
+2. Klik kanan pada `Workspace`, pilih `Insert Object > Script`.
+3. Ganti isi script dengan kode berikut:
 
-➡️ Lanjut ke [Pertemuan 1 - Pengenalan Scripting di Roblox Studio](./meeting-1.md)
-
----
+```lua
+print("Halo Dunia Roblox!")
+```
