@@ -1,123 +1,119 @@
-# 💥 Meeting 7: Latihan – Buat Sistem Tombol untuk Spawn Efek
+# 🧪 Meeting 8: Ujian Mini – Proyek Mini dengan RemoteEvent
 
 ## 🎯 Tujuan
 
-- Membuat **tombol GUI** seperti sebelumnya.
-- Menghubungkannya ke **RemoteEvent**.
-- Server akan membuat **efek keren** (seperti ledakan atau cahaya) saat tombol diklik.
+- Menguji pemahaman kamu tentang **RemoteEvent**.
+- Membuat **proyek mini mandiri** yang pakai tombol dan efek.
+- Menunjukkan kreativitasmu sendiri! 🎨
 
 ---
 
-## 🧠 Apa yang Akan Kita Buat?
+## 🧠 Recap Singkat
 
-Kita akan buat:
+Sampai sekarang, kamu sudah belajar:
 
-1. Tombol `Spawn Efek`.
-2. Saat diklik → kirim pesan ke Server.
-3. Server munculkan efek spesial, misalnya **ledakan api** atau **cahaya kilat**.
-
----
-
-## 🛠️ Langkah A: RemoteEvent
-
-1. Klik `ReplicatedStorage` → `Insert Object` → pilih `RemoteEvent`.
-2. Ganti nama jadi: `SpawnEffectEvent`.
+- Cara pakai RemoteEvent untuk kirim pesan Client ⇄ Server.
+- Buat tombol GUI pakai `TextButton`.
+- Membuat Part dan Efek dari Script di Server.
 
 ---
 
-## 🎮 Langkah B: Buat Tombol GUI
+## 🏗️ Tugas Proyek Mini
 
-1. Klik `StarterGui` → `Insert Object` → `ScreenGui`.
-2. Di dalam `ScreenGui`, klik kanan → `Insert Object` → `TextButton`.
-3. Atur properti tombol:
-   - **Name**: `EffectButton`
-   - **Text**: `Spawn Efek!`
-   - **Size**: `UDim2.new(0, 200, 0, 50)`
-   - **Position**: `UDim2.new(0.5, -100, 0.7, 0)` (tengah bawah layar)
+Buat **satu fitur game kecil** yang punya:
+
+1. Tombol GUI (di layar).
+2. LocalScript yang kirim `RemoteEvent` ke server.
+3. Script server yang munculkan sesuatu (Part, Efek, atau suara).
 
 ---
 
-## 💻 Langkah C: Tambahkan LocalScript ke Tombol
+## 📌 Contoh Ide Proyek Mini
 
-1. Klik kanan pada `EffectButton` → `Insert Object` → `LocalScript`.
-2. Isi kodenya:
+💥 **Jurusan Api**
+
+> Klik tombol → server spawn bola api di depan karakter!
+
+🌟 **Cahaya Kekuatan**
+
+> Klik tombol → karakter disinari cahaya kuning cerah selama 2 detik.
+
+⚡ **Summon Batu Besar**
+
+> Klik tombol → server spawn batu besar di posisi tertentu.
+
+💡 **Kreasi Bebas**
+
+> Boleh campur Part, efek suara, warna, dan posisi! Asal pakai `RemoteEvent`.
+
+---
+
+## 🛠️ Langkah Bimbingan (Kalau Perlu)
+
+### 1. Siapkan RemoteEvent
+
+- Buat `RemoteEvent` di `ReplicatedStorage`, contoh: `JurusEvent`
+
+### 2. Buat Tombol
+
+- Masukkan `TextButton` ke `StarterGui > ScreenGui`
+- Tulis teks: `Gunakan Jurus!`
+
+### 3. LocalScript
 
 ```lua
 local tombol = script.Parent
-local remote = game.ReplicatedStorage:WaitForChild("SpawnEffectEvent")
+local remote = game.ReplicatedStorage:WaitForChild("JurusEvent")
 
 tombol.MouseButton1Click:Connect(function()
 	remote:FireServer()
 end)
 ```
 
----
-
-## 🔥 Langkah D: Script untuk Membuat Efek
-
-1. Klik `ServerScriptService` → `Insert Object` → `Script`.
-2. Isi kodenya:
+### 4. Script Server
 
 ```lua
-local remote = game.ReplicatedStorage:WaitForChild("SpawnEffectEvent")
+local remote = game.ReplicatedStorage:WaitForChild("JurusEvent")
 
 remote.OnServerEvent:Connect(function(player)
-	-- Posisi efek muncul: di atas kepala pemain
-	local posisi = player.Character.HumanoidRootPart.Position + Vector3.new(0, 5, 0)
-
-	-- Buat efek ledakan
-	local ledakan = Instance.new("Explosion")
-	ledakan.Position = posisi
-	ledakan.BlastRadius = 5
-	ledakan.BlastPressure = 50000
-	ledakan.Parent = workspace
+	local part = Instance.new("Part")
+	part.Size = Vector3.new(5,1,5)
+	part.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
+	part.BrickColor = BrickColor.new("Bright red")
+	part.Anchored = true
+	part.Parent = workspace
 end)
 ```
 
-✨ Efeknya: BOOM! Ledakan muncul di atas pemain yang klik tombol!
+---
+
+## ✅ Checklist Proyek Mini
+
+| Fitur                       | Sudah? ✅ |
+| --------------------------- | --------- |
+| Ada tombol GUI              |           |
+| Tombol pakai LocalScript    |           |
+| Ada RemoteEvent di tengah   |           |
+| Script Server respon tombol |           |
+| Efek atau part muncul       |           |
 
 ---
 
-## 🧠 Variasi Efek Lain
+## 🎁 Bonus Challenge
 
-### Cahaya Kilat:
-
-```lua
-local kilat = Instance.new("PointLight")
-kilat.Color = Color3.new(1, 1, 0)  -- kuning
-kilat.Range = 15
-kilat.Brightness = 10
-
-local part = Instance.new("Part")
-part.Anchored = true
-part.Size = Vector3.new(1,1,1)
-part.Transparency = 1
-part.CanCollide = false
-part.Position = posisi
-kilat.Parent = part
-part.Parent = workspace
-
-game.Debris:AddItem(part, 1)  -- hilang setelah 1 detik
-```
-
-🔁 Kamu bisa coba ganti efek ledakan dengan cahaya kilat ini, atau gabungkan dua-duanya!
+🔊 Tambahkan suara saat tombol diklik!
+🌈 Munculkan part dengan warna acak setiap klik!
+🌀 Tambahkan animasi atau particle effect (nanti kita bahas partikel ya 😉)
 
 ---
 
-## 🎯 Latihan Mandiri
+## 🏁 Penutup
 
-1. Tambahkan tombol lain bernama `Spawn Kilat!` dan munculkan cahaya kilat.
-2. Coba munculkan efek di posisi mouse (lanjutan nanti).
-3. Ganti warna dan radius efek ledakan.
+Selamat! Kamu baru saja menyelesaikan:
 
----
+- 8 Pertemuan Scripting Dasar
+- Dan membuat proyek pertamamu! 🎉
 
-## ✅ Kamu Sudah Bisa...
+🧠 Jangan takut eksplorasi ya. Coding itu tempat bermain ide dan imajinasi 💡
 
-- Buat tombol GUI interaktif
-- Kirim pesan ke Server dengan RemoteEvent
-- Spawn efek visual dari Server (Explosion atau cahaya)
-
-Kamu makin jago! Efek ini bisa dipakai untuk jurus, serangan, atau respon dari game. 🔥⚡
-
-➡️ Lanjut ke [Pertemuan 8 - Ujian mini: proyek mini dengan RemoteEvent](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_8)
+➡️ Lanjut ke [Pertemuan 9 - Menyimpan data buah pemain (ServerScriptService)](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_9)
