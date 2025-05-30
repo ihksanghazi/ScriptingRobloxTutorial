@@ -1,119 +1,112 @@
-# 🧪 Meeting 8: Ujian Mini – Proyek Mini dengan RemoteEvent
+# 🍎 Meeting 9: Menyimpan Data Buah Pemain (ServerScriptService)
 
 ## 🎯 Tujuan
 
-- Menguji pemahaman kamu tentang **RemoteEvent**.
-- Membuat **proyek mini mandiri** yang pakai tombol dan efek.
-- Menunjukkan kreativitasmu sendiri! 🎨
+- Belajar cara **menyimpan data pemain** di server.
+- Menyimpan **nama buah** yang dimiliki pemain.
+- Data disimpan selama sesi game berlangsung.
 
 ---
 
-## 🧠 Recap Singkat
+## 🔍 Kenapa Perlu Menyimpan Data?
 
-Sampai sekarang, kamu sudah belajar:
-
-- Cara pakai RemoteEvent untuk kirim pesan Client ⇄ Server.
-- Buat tombol GUI pakai `TextButton`.
-- Membuat Part dan Efek dari Script di Server.
+Kalau pemain ambil buah (misalnya: “Flame Fruit”), kita perlu simpan info itu. Jadi kalau pemain pakai jurus atau bertarung, server tahu buah apa yang dia punya.
 
 ---
 
-## 🏗️ Tugas Proyek Mini
+## 🧱 Langkah A: Siapkan Tempat Menyimpan Data
 
-Buat **satu fitur game kecil** yang punya:
+Kita akan buat tabel (`table`) di server untuk menyimpan buah setiap pemain.
 
-1. Tombol GUI (di layar).
-2. LocalScript yang kirim `RemoteEvent` ke server.
-3. Script server yang munculkan sesuatu (Part, Efek, atau suara).
+### 1. Buka `ServerScriptService`
 
----
+Klik kanan → `Insert Object` → `Script`.
 
-## 📌 Contoh Ide Proyek Mini
-
-💥 **Jurusan Api**
-
-> Klik tombol → server spawn bola api di depan karakter!
-
-🌟 **Cahaya Kekuatan**
-
-> Klik tombol → karakter disinari cahaya kuning cerah selama 2 detik.
-
-⚡ **Summon Batu Besar**
-
-> Klik tombol → server spawn batu besar di posisi tertentu.
-
-💡 **Kreasi Bebas**
-
-> Boleh campur Part, efek suara, warna, dan posisi! Asal pakai `RemoteEvent`.
-
----
-
-## 🛠️ Langkah Bimbingan (Kalau Perlu)
-
-### 1. Siapkan RemoteEvent
-
-- Buat `RemoteEvent` di `ReplicatedStorage`, contoh: `JurusEvent`
-
-### 2. Buat Tombol
-
-- Masukkan `TextButton` ke `StarterGui > ScreenGui`
-- Tulis teks: `Gunakan Jurus!`
-
-### 3. LocalScript
+### 2. Tulis kodenya seperti ini:
 
 ```lua
-local tombol = script.Parent
-local remote = game.ReplicatedStorage:WaitForChild("JurusEvent")
+local Players = game:GetService("Players")
 
-tombol.MouseButton1Click:Connect(function()
-	remote:FireServer()
+-- Buat penyimpanan data buah
+local buahPemain = {}
+
+-- Saat pemain masuk game
+Players.PlayerAdded:Connect(function(player)
+	print(player.Name .. " telah masuk!")
+
+	-- Simpan data awal buah
+	buahPemain[player.UserId] = "Belum punya buah"
+
+	-- Contoh: kasih buah awal (bisa kamu ganti)
+	wait(3)
+	buahPemain[player.UserId] = "Flame Fruit"
+	print(player.Name .. " sekarang punya buah: " .. buahPemain[player.UserId])
 end)
-```
 
-### 4. Script Server
-
-```lua
-local remote = game.ReplicatedStorage:WaitForChild("JurusEvent")
-
-remote.OnServerEvent:Connect(function(player)
-	local part = Instance.new("Part")
-	part.Size = Vector3.new(5,1,5)
-	part.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0,5,0)
-	part.BrickColor = BrickColor.new("Bright red")
-	part.Anchored = true
-	part.Parent = workspace
+-- Saat pemain keluar
+Players.PlayerRemoving:Connect(function(player)
+	-- Hapus data dari memori
+	buahPemain[player.UserId] = nil
 end)
 ```
 
 ---
 
-## ✅ Checklist Proyek Mini
+## 📦 Apa yang Terjadi?
 
-| Fitur                       | Sudah? ✅ |
-| --------------------------- | --------- |
-| Ada tombol GUI              |           |
-| Tombol pakai LocalScript    |           |
-| Ada RemoteEvent di tengah   |           |
-| Script Server respon tombol |           |
-| Efek atau part muncul       |           |
+| Bagian Kode                       | Artinya                                      |
+| --------------------------------- | -------------------------------------------- |
+| `PlayerAdded`                     | Saat pemain masuk ke game                    |
+| `buahPemain[player.UserId] = ...` | Simpan nama buah berdasarkan ID pemain       |
+| `PlayerRemoving`                  | Saat pemain keluar, data dihapus dari memori |
 
 ---
 
-## 🎁 Bonus Challenge
+## 🧪 Coba Tes
 
-🔊 Tambahkan suara saat tombol diklik!
-🌈 Munculkan part dengan warna acak setiap klik!
-🌀 Tambahkan animasi atau particle effect (nanti kita bahas partikel ya 😉)
+1. Jalankan game di Roblox Studio (Play).
+2. Lihat di **Output**:
+   - Akan muncul nama pemain dan buah yang dimiliki.
+3. Coba ganti `"Flame Fruit"` jadi buah lain, misalnya `"Ice Fruit"` atau `"Magma Fruit"`.
 
 ---
 
-## 🏁 Penutup
+## 🧠 Pengetahuan Tambahan
 
-Selamat! Kamu baru saja menyelesaikan:
+- Data ini **belum tersimpan** permanen.
+- Artinya: Kalau keluar game, datanya hilang.
+- Nanti di pelajaran lanjutan, kita akan pakai **DataStore** untuk menyimpan data permanen.
 
-- 8 Pertemuan Scripting Dasar
-- Dan membuat proyek pertamamu! 🎉
+---
 
-🧠 Jangan takut eksplorasi ya. Coding itu tempat bermain ide dan imajinasi 💡
+## 💡 Bonus Latihan
 
-➡️ Lanjut ke [Pertemuan 9 - Menyimpan data buah pemain (ServerScriptService)](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_9)
+1. Buat RemoteEvent untuk meminta nama buah pemain.
+2. Tambahkan command di chat, misalnya: /buahku → tampilkan buah pemain.
+   Contoh Kode
+
+   ```lua
+   game.Players.PlayerAdded:Connect(function(player)
+   	player.Chatted:Connect(function(pesan)
+   		if pesan == "/buahku" then
+   			local buah = buahPemain[player.UserId]
+   			if buah then
+   				print("Buah kamu: " .. buah)
+   			end
+   		end
+   	end)
+   end)
+
+   ```
+
+---
+
+## ✅ Kamu Sudah Bisa...
+
+- Simpan info penting di server.
+- Hubungkan data ke UserId pemain.
+- Bikin sistem awal untuk data “buah”.
+
+Mantap! Sekarang kamu bisa bikin sistem pemain yang punya item khusus seperti buah 🔥❄️🌪️
+
+➡️ Lanjut ke [Pertemuan 10 - RemoteEvent untuk makan buah](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_10)
