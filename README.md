@@ -36,4 +36,44 @@ Scripting adalah cara untuk mengontrol game menggunakan bahasa pemrograman Lua. 
 print("Halo Dunia Roblox!")
 ```
 
+4. Jalankan game atau tekan tombol (`F5`).
+5. Lihat hasilnya di **Output Window** (`View > Output`).
+
+---
+
+## 🧪 Eksperimen: Mengubah Warna Part Lewat Script
+
+### Langkah:
+
+1. Tambahkan **Part** di Workspace.
+2. Klik kanan pada Part → `Insert Object > Script`.
+3. Ganti isi script dengan kode berikut:
+
+```lua
+script.Parent.BrickColor = BrickColor.Random()
+```
+
+---
+
+## 💡 Catatan
+
+- Semua script yang ada di dalam `Workspace` atau `ServerScriptService` akan berjalan sebagai **Script server**.
+- Jika kamu butuh interaksi dari pemain (seperti menekan tombol), gunakan `LocalScript` nanti.
+
+---
+
+## 🧠 Latihan Mandiri
+
+1. Buat script yang mengubah ukuran part jadi lebih besar.
+2. Buat 3 part berbeda dan setiap part punya script yang mengganti warnanya secara acak saat game dimulai.
+
+---
+
+## ✅ Evaluasi
+
+- Apakah kamu bisa membuat dan menjalankan Script?
+- Apakah kamu paham kapan harus menggunakan Script vs LocalScript?
+
+Jika sudah, lanjut ke Meeting 2: Membuat script pertama: cetak teks, manipulasi part.
+
 ➡️ Lanjut ke [Pertemuan 2 - Membuat script pertama: cetak teks, manipulasi part](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_2)
