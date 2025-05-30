@@ -1,98 +1,101 @@
-# 🔁 Meeting 5: RemoteEvent – Komunikasi Client-Server Dasar
+# 🧪 Meeting 6: Praktik – Tombol Klik untuk Spawn Part (RemoteEvent)
 
 ## 🎯 Tujuan
 
-- Mengerti cara kerja **Client** dan **Server** di Roblox.
-- Belajar menggunakan **RemoteEvent** untuk mengirim pesan antar script.
-- Membuat contoh tombol yang mengirim pesan dari pemain ke server.
+- Membuat **tombol GUI** di layar.
+- Mengirim perintah dari **Client** ke **Server** saat tombol diklik.
+- Server akan **munculkan Part** di dunia!
 
 ---
 
-## 🧾 Apa Itu Client dan Server?
+## 🔁 Mengingat Kembali
 
-> 🔹 **Client** = Pemain yang main game di komputernya sendiri.  
-> 🔹 **Server** = Tempat utama yang mengatur semua hal di dalam game.
-
-🧠 Client dan Server **tidak bisa langsung ngobrol**. Mereka butuh "alat komunikasi", yaitu:
-
-### 🎤 RemoteEvent
-
-RemoteEvent adalah "walkie-talkie" antara client dan server. Bisa kirim pesan 2 arah:
-
-- Dari **Client ke Server**
-- Dari **Server ke Client**
+> Kita akan pakai **RemoteEvent** untuk mengirim pesan dari tombol (Client) ke Script (Server).
 
 ---
 
-## 🛠️ Contoh: Pemain Tekan Tombol → Server Cetak Pesan
+## 🧱 Langkah A: Siapkan RemoteEvent
 
-### Langkah 1: Buat RemoteEvent
-
-1. Klik kanan `ReplicatedStorage` → `Insert Object` → pilih `RemoteEvent`.
-2. Ganti nama jadi: `KirimPesan`.
+1. Klik `ReplicatedStorage` → klik kanan → `Insert Object` → `RemoteEvent`.
+2. Ganti namanya jadi: `SpawnPartEvent`.
 
 ---
 
-### Langkah 2: Buat LocalScript (Client)
+## 🎮 Langkah B: Buat Tombol GUI
 
-1. Masuk ke `StarterPlayer > StarterPlayerScripts`.
-2. Tambahkan `LocalScript`.
-3. Isi dengan:
+1. Klik `StarterGui` → klik kanan → `Insert Object` → `ScreenGui`.
+2. Klik `ScreenGui` → klik kanan → `Insert Object` → `TextButton`.
+3. Atur properti tombol:
+   - **Name**: `SpawnButton`
+   - **Text**: `Spawn Part!`
+   - **Size**: `UDim2.new(0, 200, 0, 50)`
+   - **Position**: `UDim2.new(0.5, -100, 0.8, 0)` (tengah bawah)
+
+---
+
+## 💻 Langkah C: Tambahkan LocalScript ke Tombol
+
+1. Klik kanan pada `SpawnButton` → `Insert Object` → `LocalScript`.
+2. Isi dengan kode ini:
 
 ```lua
-local remote = game.ReplicatedStorage:WaitForChild("KirimPesan")
+local tombol = script.Parent
+local remote = game.ReplicatedStorage:WaitForChild("SpawnPartEvent")
 
--- Kirim pesan ke server saat game dimulai
-remote:FireServer("Halo dari Client!")
-```
-
-### Langkah 3: Buat Script (Server)
-
-1. Tambahkan Script ke dalam ServerScriptService.
-2. Isi dengan:
-
-```lua
-local remote = game.ReplicatedStorage:WaitForChild("KirimPesan")
-
-remote.OnServerEvent:Connect(function(player, pesan)
-	print(player.Name .. " mengirim pesan: " .. pesan)
+tombol.MouseButton1Click:Connect(function()
+	remote:FireServer()  -- kirim sinyal ke server
 end)
 ```
 
-💬 Sekarang saat game dimulai, server akan menerima dan mencetak pesan dari client!
+---
 
-### 💡 Penjelasan
+## 🧠 Langkah D: Buat Script di Server untuk Spawn Part
 
-| Fungsi                    | Artinya                            |
-| ------------------------- | ---------------------------------- |
-| `FireServer(...)`         | Kirim pesan dari client ke server  |
-| `OnServerEvent:Connect()` | Terima pesan di server dari client |
-| `player`                  | Nama pemain yang mengirim pesan    |
-| `pesan`                   | Isi pesan yang dikirim             |
+1. Klik ServerScriptService → klik kanan → Insert Object → Script.
+2. Isi dengan kode ini:
+
+```lua
+local remote = game.ReplicatedStorage:WaitForChild("SpawnPartEvent")
+
+remote.OnServerEvent:Connect(function(player)
+	local partBaru = Instance.new("Part")
+	partBaru.Size = Vector3.new(4, 1, 4)
+	partBaru.BrickColor = BrickColor.Random()
+	partBaru.Anchored = true
+	partBaru.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, 5, 0)
+	partBaru.Parent = workspace
+end)
+```
+
+🎉 Sekarang saat tombol diklik, server akan spawn 1 part di atas kepala pemain!
 
 ---
 
-## 🎮 Latihan Mandiri
+## 🔍 Penjelasan
 
-1. Ubah isi pesan menjadi `"Aku siap bertarung!"`.
-2. Coba kirim angka dari client, misalnya skor.
-3. Tambahkan tombol GUI untuk mengirim RemoteEvent (nanti kita bahas GUI lebih dalam ya!).
-
----
-
-## 🧪 Tantangan Seru
-
-- Buat LocalScript yang mengirim `"Serangan Z diluncurkan!"` saat tombol Z ditekan.
-- Di Script server, tampilkan pesan dari pemain yang menekan Z.
+| Bagian Kode                       | Artinya                                        |
+| --------------------------------- | ---------------------------------------------- |
+| `MouseButton1Click`               | Event saat tombol di-klik                      |
+| `FireServer()`                    | Kirim sinyal ke server                         |
+| `Instance.new("Part")`            | Buat Part baru                                 |
+| `player.Character.Position + ...` | Menentukan posisi Part muncul (di atas pemain) |
 
 ---
 
-## ✅ Kamu Sudah Bisa...
+## 🧠 Latihan Mandiri
 
-- Bikin RemoteEvent untuk komunikasi Client ↔ Server
-- Mengirim pesan dari LocalScript ke Script
-- Menerima pesan dan mencetaknya di server
+1. Ubah warna Part jadi `BrickColor.new("Bright yellow")`.
+2. Ganti ukuran Part jadi lebih besar.
+3. Tambahkan efek suara atau partikel saat Part muncul (nanti kita bahas efek ya!).
 
-Keren banget! Ini dasar penting untuk bikin skill, misi, dan sistem pertarungan multiplayer 💥
+---
 
-➡️ Lanjut ke [Pertemuan 6 - Praktik: tombol klik spawn part dengan RemoteEvent](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_6)
+## Kamu Sudah Bisa...
+
+- Bikin GUI tombol di layar
+- Kirim event dari Client ke Server saat tombol diklik
+- Spawn Part dari Server
+
+Keren! 🎉 Kamu barusan bikin fitur interaktif yang pakai RemoteEvent dan GUI! Ini bisa kamu pakai untuk spawn musuh, beri efek, atau panggil jurus spesial 💥
+
+➡️ Lanjut ke [Pertemuan 7 - Latihan: buat sistem tombol untuk spawn efek](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_7)
