@@ -35,3 +35,5 @@ Scripting adalah cara untuk mengontrol game menggunakan bahasa pemrograman Lua. 
 ```lua
 print("Halo Dunia Roblox!")
 ```
+
+➡️ Lanjut ke [Pertemuan 2 - Membuat script pertama: cetak teks, manipulasi part](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_2)
