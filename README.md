@@ -1,119 +1,123 @@
-# 🧠 Meeting 3: Variabel, Fungsi, dan Event Dasar di Lua
+# 🧠 Meeting 4: Memahami Script, LocalScript, dan ModuleScript
 
 ## 🎯 Tujuan
 
-- Mengenal **variabel**: tempat menyimpan data.
-- Mengenal **fungsi**: kumpulan perintah yang bisa dipanggil.
-- Mengenal **event**: kode yang aktif saat sesuatu terjadi (seperti klik atau sentuh).
+- Mengetahui perbedaan antara **Script**, **LocalScript**, dan **ModuleScript**.
+- Belajar kapan harus memakai masing-masing jenis script.
+- Mencoba contoh sederhana dari masing-masing script.
 
 ---
 
-## 🧮 Bagian A: Apa Itu Variabel?
+## 🧾 Kenalan Dulu Yuk!
 
-### Bayangkan:
-
-Variabel itu seperti **kotak** yang menyimpan sesuatu. Kita kasih nama kotaknya, lalu isi dengan nilai.
-
-### Contoh:
-
-```lua
-local namaBuah = "Fire Fruit"
-print(namaBuah)  -- akan mencetak: Fire Fruit
-```
-
-### Latihan:
-
-1. Buat variabel `playerName` dan isi dengan namamu.
-2. Cetak ke output:
-
-```lua
-local playerName = "Raka"
-print("Halo, " .. playerName)
-```
-
-📝 `..` digunakan untuk menyambung teks.
+| Jenis Script     | Jalan di         | Untuk Apa?                                                                         |
+| ---------------- | ---------------- | ---------------------------------------------------------------------------------- |
+| **Script**       | Server           | Untuk hal-hal yang semua pemain bisa lihat (misal: spawn musuh, kasih damage, dll) |
+| **LocalScript**  | Client (Player)  | Untuk hal pribadi pemain seperti tombol, GUI, kamera                               |
+| **ModuleScript** | Reusable (Semua) | Untuk menyimpan fungsi yang bisa dipakai berulang-ulang                            |
 
 ---
 
-## 🛠️ Bagian B: Apa Itu Fungsi?
+## 🛠️ Contoh A: Script (Server Side)
 
-Fungsi adalah **kumpulan perintah** yang bisa dijalankan kapan saja.
+### Langkah:
 
-### Contoh:
-
-```lua
-local function sapa()
-	print("Selamat datang di dunia Roblox!")
-end
-
-sapa()  -- memanggil fungsi sapa
-```
-
-### Latihan:
-
-Buat fungsi bernama `perkenalan` yang mencetak namamu dan usia.
-
-```lua
-local function perkenalan()
-	print("Halo, aku Raka dan aku 13 tahun.")
-end
-
-perkenalan()
-```
-
----
-
-## 🎯 Bagian C: Apa Itu Event?
-
-Event membuat kode jalan saat sesuatu terjadi.
-
-### Contoh: Sentuh Part
-
-1. Buat 1 Part di Workspace.
-2. Tambahkan Script di dalam Part.
+1. Tambahkan **Part** ke Workspace.
+2. Tambahkan `Script` ke dalam Part.
 3. Tulis kode ini:
 
 ```lua
-local part = script.Parent
-
-local function disentuh(apaYangMenyentuh)
-	print("Part disentuh oleh: ", apaYangMenyentuh.Name)
-end
-
-part.Touched:Connect(disentuh)
+print("Halo dari Script Server!")
 ```
 
-🔁 Penjelasan:
+🧠 Script ini akan jalan untuk semua pemain.
 
-- `Touched` adalah event saat part disentuh.
-- `Connect` menghubungkan event ke fungsi `disentuh`.
+---
 
-Coba:
-Jalankan game dan sentuh part dengan karaktermu!
+## 🧰 Contoh B: LocalScript (Client Side)
+
+### Langkah:
+
+1. Tambahkan `StarterPlayer > StarterPlayerScripts`.
+2. Klik kanan → `Insert Object > LocalScript`.
+3. Tulis kode ini:
+
+```lua
+print("Halo dari LocalScript!")
+```
+
+🧠 LocalScript hanya akan jalan untuk pemain yang sedang main. Misalnya, kita bisa pakai untuk:
+
+- Buka GUI
+- Kontrol tombol keyboard
+- Efek kamera
+
+---
+
+## 🔁 Contoh C: ModuleScript (Untuk Disimpan dan Dipanggil)
+
+### Langkah:
+
+1. Klik `ReplicatedStorage` → `Insert Object > ModuleScript`.
+2. Ganti nama jadi `MathHelper`.
+3. Isi kodenya:
+
+```lua
+local MathHelper = {}
+
+function MathHelper.Tambah(a, b)
+	return a + b
+end
+
+return MathHelper
+```
+
+4. Sekarang, dari Script atau LocalScript lain, kamu bisa panggil:
+
+```lua
+local mathLib = require(game.ReplicatedStorage.MathHelper)
+print(mathLib.Tambah(5, 3))  -- Hasil: 8
+```
+
+🧠 ModuleScript seperti kotak alat berisi fungsi-fungsi yang bisa dipakai di mana saja.
+
+---
+
+## 🎯 Kapan Harus Pakai yang Mana?
+
+| Mau ngapain?                       | Pakai apa?   |
+| ---------------------------------- | ------------ |
+| Kasih damage ke musuh              | Script       |
+| Menampilkan tombol di layar        | LocalScript  |
+| Simpan fungsi-fungsi hitung damage | ModuleScript |
+| Membuat GUI khusus pemain          | LocalScript  |
+| Munculkan musuh untuk semua pemain | Script       |
 
 ---
 
 ## 🧠 Latihan Mandiri
 
-1. Buat variabel `buahFavorit` dan cetak ke Output.
-2. Buat fungsi `serang()` yang mencetak `"Zzzap! Serangan petir!"`.
-3. Buat Part yang saat disentuh mencetak `"Aduh! Kamu menyentuhnya!"`.
+1. Buat LocalScript yang mencetak `“Halo dari LocalScript!”` saat game dimulai.
+2. Buat ModuleScript bernama `Perkenalan` yang punya fungsi `sapa(nama)` dan cetak `"Halo, <nama>"`.
+3. Buat Script yang memanggil fungsi dari ModuleScript `Perkenalan`.
 
 ---
 
-## 🧪 Tantangan Ekstra
+## 🧪 Tantangan Bonus
 
-Gabungkan semuanya:
+Coba buat:
 
-- Saat menyentuh part, panggil fungsi `serang()`, dan tampilkan nama buah favoritmu di output!
+- ModuleScript dengan fungsi `serangan(seranganName)`, lalu dari Script panggil `serangan("Tendangan Api")`.
+- LocalScript yang menampilkan GUI saat tombol ditekan (nanti kita pelajari lebih dalam ya!).
 
 ---
 
-## ✅ Kamu Sudah Bisa...
+## Kamu Sudah Paham...
 
-- Membuat variabel 🧺
-- Membuat fungsi 🧩
-- Menangkap event 🖱️
-- Kamu sudah mulai jadi coder Roblox beneran! 🚀
+- Perbedaan Script, LocalScript, dan ModuleScript
+- Cara pakainya
+- Contoh sederhana masing-masing
 
-➡️ Lanjut ke [Pertemuan 4 - Memahami LocalScript vs Script vs ModuleScript](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_4)
+Hebat banget! Sekarang kamu sudah tahu struktur penting dalam scripting Roblox 💻🧠
+
+➡️ Lanjut ke [Pertemuan 5 - RemoteEvent: komunikasi Client-Server dasar](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_5)
