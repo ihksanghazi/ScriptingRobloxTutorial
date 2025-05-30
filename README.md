@@ -1,123 +1,98 @@
-# 🧠 Meeting 4: Memahami Script, LocalScript, dan ModuleScript
+# 🔁 Meeting 5: RemoteEvent – Komunikasi Client-Server Dasar
 
 ## 🎯 Tujuan
 
-- Mengetahui perbedaan antara **Script**, **LocalScript**, dan **ModuleScript**.
-- Belajar kapan harus memakai masing-masing jenis script.
-- Mencoba contoh sederhana dari masing-masing script.
+- Mengerti cara kerja **Client** dan **Server** di Roblox.
+- Belajar menggunakan **RemoteEvent** untuk mengirim pesan antar script.
+- Membuat contoh tombol yang mengirim pesan dari pemain ke server.
 
 ---
 
-## 🧾 Kenalan Dulu Yuk!
+## 🧾 Apa Itu Client dan Server?
 
-| Jenis Script     | Jalan di         | Untuk Apa?                                                                         |
-| ---------------- | ---------------- | ---------------------------------------------------------------------------------- |
-| **Script**       | Server           | Untuk hal-hal yang semua pemain bisa lihat (misal: spawn musuh, kasih damage, dll) |
-| **LocalScript**  | Client (Player)  | Untuk hal pribadi pemain seperti tombol, GUI, kamera                               |
-| **ModuleScript** | Reusable (Semua) | Untuk menyimpan fungsi yang bisa dipakai berulang-ulang                            |
+> 🔹 **Client** = Pemain yang main game di komputernya sendiri.  
+> 🔹 **Server** = Tempat utama yang mengatur semua hal di dalam game.
+
+🧠 Client dan Server **tidak bisa langsung ngobrol**. Mereka butuh "alat komunikasi", yaitu:
+
+### 🎤 RemoteEvent
+
+RemoteEvent adalah "walkie-talkie" antara client dan server. Bisa kirim pesan 2 arah:
+
+- Dari **Client ke Server**
+- Dari **Server ke Client**
 
 ---
 
-## 🛠️ Contoh A: Script (Server Side)
+## 🛠️ Contoh: Pemain Tekan Tombol → Server Cetak Pesan
 
-### Langkah:
+### Langkah 1: Buat RemoteEvent
 
-1. Tambahkan **Part** ke Workspace.
-2. Tambahkan `Script` ke dalam Part.
-3. Tulis kode ini:
+1. Klik kanan `ReplicatedStorage` → `Insert Object` → pilih `RemoteEvent`.
+2. Ganti nama jadi: `KirimPesan`.
+
+---
+
+### Langkah 2: Buat LocalScript (Client)
+
+1. Masuk ke `StarterPlayer > StarterPlayerScripts`.
+2. Tambahkan `LocalScript`.
+3. Isi dengan:
 
 ```lua
-print("Halo dari Script Server!")
+local remote = game.ReplicatedStorage:WaitForChild("KirimPesan")
+
+-- Kirim pesan ke server saat game dimulai
+remote:FireServer("Halo dari Client!")
 ```
 
-🧠 Script ini akan jalan untuk semua pemain.
+### Langkah 3: Buat Script (Server)
 
----
-
-## 🧰 Contoh B: LocalScript (Client Side)
-
-### Langkah:
-
-1. Tambahkan `StarterPlayer > StarterPlayerScripts`.
-2. Klik kanan → `Insert Object > LocalScript`.
-3. Tulis kode ini:
+1. Tambahkan Script ke dalam ServerScriptService.
+2. Isi dengan:
 
 ```lua
-print("Halo dari LocalScript!")
+local remote = game.ReplicatedStorage:WaitForChild("KirimPesan")
+
+remote.OnServerEvent:Connect(function(player, pesan)
+	print(player.Name .. " mengirim pesan: " .. pesan)
+end)
 ```
 
-🧠 LocalScript hanya akan jalan untuk pemain yang sedang main. Misalnya, kita bisa pakai untuk:
+💬 Sekarang saat game dimulai, server akan menerima dan mencetak pesan dari client!
 
-- Buka GUI
-- Kontrol tombol keyboard
-- Efek kamera
+### 💡 Penjelasan
 
----
-
-## 🔁 Contoh C: ModuleScript (Untuk Disimpan dan Dipanggil)
-
-### Langkah:
-
-1. Klik `ReplicatedStorage` → `Insert Object > ModuleScript`.
-2. Ganti nama jadi `MathHelper`.
-3. Isi kodenya:
-
-```lua
-local MathHelper = {}
-
-function MathHelper.Tambah(a, b)
-	return a + b
-end
-
-return MathHelper
-```
-
-4. Sekarang, dari Script atau LocalScript lain, kamu bisa panggil:
-
-```lua
-local mathLib = require(game.ReplicatedStorage.MathHelper)
-print(mathLib.Tambah(5, 3))  -- Hasil: 8
-```
-
-🧠 ModuleScript seperti kotak alat berisi fungsi-fungsi yang bisa dipakai di mana saja.
+| Fungsi                    | Artinya                            |
+| ------------------------- | ---------------------------------- |
+| `FireServer(...)`         | Kirim pesan dari client ke server  |
+| `OnServerEvent:Connect()` | Terima pesan di server dari client |
+| `player`                  | Nama pemain yang mengirim pesan    |
+| `pesan`                   | Isi pesan yang dikirim             |
 
 ---
 
-## 🎯 Kapan Harus Pakai yang Mana?
+## 🎮 Latihan Mandiri
 
-| Mau ngapain?                       | Pakai apa?   |
-| ---------------------------------- | ------------ |
-| Kasih damage ke musuh              | Script       |
-| Menampilkan tombol di layar        | LocalScript  |
-| Simpan fungsi-fungsi hitung damage | ModuleScript |
-| Membuat GUI khusus pemain          | LocalScript  |
-| Munculkan musuh untuk semua pemain | Script       |
+1. Ubah isi pesan menjadi `"Aku siap bertarung!"`.
+2. Coba kirim angka dari client, misalnya skor.
+3. Tambahkan tombol GUI untuk mengirim RemoteEvent (nanti kita bahas GUI lebih dalam ya!).
 
 ---
 
-## 🧠 Latihan Mandiri
+## 🧪 Tantangan Seru
 
-1. Buat LocalScript yang mencetak `“Halo dari LocalScript!”` saat game dimulai.
-2. Buat ModuleScript bernama `Perkenalan` yang punya fungsi `sapa(nama)` dan cetak `"Halo, <nama>"`.
-3. Buat Script yang memanggil fungsi dari ModuleScript `Perkenalan`.
-
----
-
-## 🧪 Tantangan Bonus
-
-Coba buat:
-
-- ModuleScript dengan fungsi `serangan(seranganName)`, lalu dari Script panggil `serangan("Tendangan Api")`.
-- LocalScript yang menampilkan GUI saat tombol ditekan (nanti kita pelajari lebih dalam ya!).
+- Buat LocalScript yang mengirim `"Serangan Z diluncurkan!"` saat tombol Z ditekan.
+- Di Script server, tampilkan pesan dari pemain yang menekan Z.
 
 ---
 
-## Kamu Sudah Paham...
+## ✅ Kamu Sudah Bisa...
 
-- Perbedaan Script, LocalScript, dan ModuleScript
-- Cara pakainya
-- Contoh sederhana masing-masing
+- Bikin RemoteEvent untuk komunikasi Client ↔ Server
+- Mengirim pesan dari LocalScript ke Script
+- Menerima pesan dan mencetaknya di server
 
-Hebat banget! Sekarang kamu sudah tahu struktur penting dalam scripting Roblox 💻🧠
+Keren banget! Ini dasar penting untuk bikin skill, misi, dan sistem pertarungan multiplayer 💥
 
-➡️ Lanjut ke [Pertemuan 5 - RemoteEvent: komunikasi Client-Server dasar](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_5)
+➡️ Lanjut ke [Pertemuan 6 - Praktik: tombol klik spawn part dengan RemoteEvent](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_6)
