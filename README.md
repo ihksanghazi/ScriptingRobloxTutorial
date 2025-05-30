@@ -1,107 +1,119 @@
-# 🧪 Meeting 2: Membuat Script Pertama di Roblox Studio
+# 🧠 Meeting 3: Variabel, Fungsi, dan Event Dasar di Lua
 
 ## 🎯 Tujuan
 
-- Menulis **kode pertama** di Roblox Studio.
-- Mengenal **fungsi `print()`**.
-- Belajar cara **mengubah warna dan ukuran Part** dengan script.
+- Mengenal **variabel**: tempat menyimpan data.
+- Mengenal **fungsi**: kumpulan perintah yang bisa dipanggil.
+- Mengenal **event**: kode yang aktif saat sesuatu terjadi (seperti klik atau sentuh).
 
 ---
 
-## 🎮 Yuk Mulai!
+## 🧮 Bagian A: Apa Itu Variabel?
 
-### 1. Buka Roblox Studio
+### Bayangkan:
 
-1. Klik `New Project` > pilih **Baseplate**.
-2. Sekarang kamu berada di dunia kosong, tapi siap untuk diberi “nyawa” lewat kode!
+Variabel itu seperti **kotak** yang menyimpan sesuatu. Kita kasih nama kotaknya, lalu isi dengan nilai.
 
----
-
-## ✍️ Bagian A: Cetak Teks dengan `print()`
-
-### Apa itu `print()`?
-
-`print()` adalah perintah untuk **menampilkan tulisan di jendela Output**, supaya kita tahu kode kita jalan atau tidak.
-
-### Langkah-langkah:
-
-1. Klik kanan `Workspace` → pilih `Insert Object` → pilih `Script`.
-2. Di dalam Script, ganti kodenya jadi:
+### Contoh:
 
 ```lua
-print("Halo, dunia Roblox!")
+local namaBuah = "Fire Fruit"
+print(namaBuah)  -- akan mencetak: Fire Fruit
 ```
 
-3. Tekan tombol **Play** (F5).
-4. Klik menu `View` → pilih `Output`.
-5. Lihat deh! Ada tulisan `"Halo, dunia Roblox!"` muncul 🎉
+### Latihan:
+
+1. Buat variabel `playerName` dan isi dengan namamu.
+2. Cetak ke output:
+
+```lua
+local playerName = "Raka"
+print("Halo, " .. playerName)
+```
+
+📝 `..` digunakan untuk menyambung teks.
 
 ---
 
-## 🟥 Bagian B: Ubah Warna Part dengan Script
+## 🛠️ Bagian B: Apa Itu Fungsi?
 
-### Langkah-langkah:
+Fungsi adalah **kumpulan perintah** yang bisa dijalankan kapan saja.
 
-1. Tambahkan 1 **Part** ke Workspace (klik kanan → Insert Object → Part).
-2. Klik kanan pada Part itu → pilih `Insert Object` → `Script`.
-3. Ganti isi script-nya jadi:
+### Contoh:
 
 ```lua
-script.Parent.BrickColor = BrickColor.Random()
+local function sapa()
+	print("Selamat datang di dunia Roblox!")
+end
+
+sapa()  -- memanggil fungsi sapa
 ```
 
-4. Jalankan game (F5), dan lihat warna part akan berubah secara acak 🌈
+### Latihan:
+
+Buat fungsi bernama `perkenalan` yang mencetak namamu dan usia.
+
+```lua
+local function perkenalan()
+	print("Halo, aku Raka dan aku 13 tahun.")
+end
+
+perkenalan()
+```
 
 ---
 
-## 📏 Bagian C: Ubah Ukuran Part dengan Script
+## 🎯 Bagian C: Apa Itu Event?
 
-### Langkah-langkah:
+Event membuat kode jalan saat sesuatu terjadi.
 
-1. Tambahkan 1 **Part** ke Workspace (klik kanan → Insert Object → Part).
-2. Klik kanan pada Part itu → pilih `Insert Object` → `Script`.
-3. Ganti isi script-nya jadi:
+### Contoh: Sentuh Part
+
+1. Buat 1 Part di Workspace.
+2. Tambahkan Script di dalam Part.
+3. Tulis kode ini:
 
 ```lua
-script.Parent.Size = Vector3.new(10, 5, 10)
+local part = script.Parent
+
+local function disentuh(apaYangMenyentuh)
+	print("Part disentuh oleh: ", apaYangMenyentuh.Name)
+end
+
+part.Touched:Connect(disentuh)
 ```
 
-Artinya:
+🔁 Penjelasan:
 
-- Lebar = 10
-- Tinggi = 5
-- Panjang = 10
+- `Touched` adalah event saat part disentuh.
+- `Connect` menghubungkan event ke fungsi `disentuh`.
 
-Sekarang Part kamu akan jadi lebih besar 💪
+Coba:
+Jalankan game dan sentuh part dengan karaktermu!
 
 ---
 
 ## 🧠 Latihan Mandiri
 
-Coba lakukan hal-hal ini:
-
-1. Buat 3 Part dengan warna berbeda menggunakan `BrickColor.Random()`.
-2. Buat Part yang berubah ukuran dan warna saat game dimulai.
-3. Tambahkan tulisan di Output seperti `"Part sudah berubah!"` setelah mengubah ukurannya.
-
-Contoh:
-
-```lua
-script.Parent.Size = Vector3.new(8, 8, 8)
-script.Parent.BrickColor = BrickColor.Red()
-print("Part sudah berubah!")
-```
+1. Buat variabel `buahFavorit` dan cetak ke Output.
+2. Buat fungsi `serang()` yang mencetak `"Zzzap! Serangan petir!"`.
+3. Buat Part yang saat disentuh mencetak `"Aduh! Kamu menyentuhnya!"`.
 
 ---
 
-## ✅ Siap Lanjut?
+## 🧪 Tantangan Ekstra
 
-Kamu sudah bisa:
+Gabungkan semuanya:
 
-- Menulis script pertama
-- Mencetak teks
-- Mengubah warna dan ukuran part
+- Saat menyentuh part, panggil fungsi `serang()`, dan tampilkan nama buah favoritmu di output!
 
-Keren! 🎉
+---
 
-➡️ Lanjut ke [Pertemuan 3 - Variabel, fungsi, dan event dasar di Lua](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_3)
+## ✅ Kamu Sudah Bisa...
+
+- Membuat variabel 🧺
+- Membuat fungsi 🧩
+- Menangkap event 🖱️
+- Kamu sudah mulai jadi coder Roblox beneran! 🚀
+
+➡️ Lanjut ke [Pertemuan 4 - Memahami LocalScript vs Script vs ModuleScript](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_4)
