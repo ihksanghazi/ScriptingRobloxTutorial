@@ -1,112 +1,123 @@
-# 🍎 Meeting 9: Menyimpan Data Buah Pemain (ServerScriptService)
+# 🍇 Meeting 10: RemoteEvent untuk Makan Buah Sekarang
 
 ## 🎯 Tujuan
 
-- Belajar cara **menyimpan data pemain** di server.
-- Menyimpan **nama buah** yang dimiliki pemain.
-- Data disimpan selama sesi game berlangsung.
+- Membuat **tombol GUI** untuk “makan buah”.
+- Kirim pesan ke Server pakai **RemoteEvent**.
+- Server menyimpan buah yang dimakan oleh pemain.
 
 ---
 
-## 🔍 Kenapa Perlu Menyimpan Data?
+## 🧠 Cerita Game
 
-Kalau pemain ambil buah (misalnya: “Flame Fruit”), kita perlu simpan info itu. Jadi kalau pemain pakai jurus atau bertarung, server tahu buah apa yang dia punya.
+Bayangkan kamu nemu buah seperti:
+
+- 🔥 Flame Fruit
+- ❄️ Ice Fruit
+- ⚡ Lightning Fruit
+
+Lalu kamu klik tombol “Makan” → Server tahu kamu makan buah itu → dan menyimpannya. Gampang kan?
 
 ---
 
-## 🧱 Langkah A: Siapkan Tempat Menyimpan Data
+## 🛠️ Langkah A: RemoteEvent
 
-Kita akan buat tabel (`table`) di server untuk menyimpan buah setiap pemain.
+1. Klik `ReplicatedStorage` → `Insert Object` → `RemoteEvent`.
+2. Ganti nama: `MakanBuahEvent`.
 
-### 1. Buka `ServerScriptService`
+---
 
-Klik kanan → `Insert Object` → `Script`.
+## 🖱️ Langkah B: Buat GUI Makan Buah
 
-### 2. Tulis kodenya seperti ini:
+1. Klik `StarterGui` → `Insert Object` → `ScreenGui`.
+2. Di dalamnya, buat:
+   - **TextButton** → nama: `MakanButton`
+   - **TextLabel** → nama: `NamaBuahLabel`
+
+Atur seperti ini:
+
+- `TextButton.Text = "Makan Buah"`
+- `TextLabel.Text = "Flame Fruit"` _(ini contoh buah yang mau dimakan)_
+
+---
+
+## 💻 Langkah C: LocalScript di Tombol
+
+Klik kanan `MakanButton` → `Insert Object` → `LocalScript`. Lalu isi:
 
 ```lua
-local Players = game:GetService("Players")
+local tombol = script.Parent
+local label = tombol.Parent:WaitForChild("NamaBuahLabel")
+local remote = game.ReplicatedStorage:WaitForChild("MakanBuahEvent")
 
--- Buat penyimpanan data buah
-local buahPemain = {}
-
--- Saat pemain masuk game
-Players.PlayerAdded:Connect(function(player)
-	print(player.Name .. " telah masuk!")
-
-	-- Simpan data awal buah
-	buahPemain[player.UserId] = "Belum punya buah"
-
-	-- Contoh: kasih buah awal (bisa kamu ganti)
-	wait(3)
-	buahPemain[player.UserId] = "Flame Fruit"
-	print(player.Name .. " sekarang punya buah: " .. buahPemain[player.UserId])
-end)
-
--- Saat pemain keluar
-Players.PlayerRemoving:Connect(function(player)
-	-- Hapus data dari memori
-	buahPemain[player.UserId] = nil
+tombol.MouseButton1Click:Connect(function()
+	local namaBuah = label.Text
+	remote:FireServer(namaBuah)
 end)
 ```
 
 ---
 
-## 📦 Apa yang Terjadi?
+## 🔐 Langkah D: Script di Server
 
-| Bagian Kode                       | Artinya                                      |
-| --------------------------------- | -------------------------------------------- |
-| `PlayerAdded`                     | Saat pemain masuk ke game                    |
-| `buahPemain[player.UserId] = ...` | Simpan nama buah berdasarkan ID pemain       |
-| `PlayerRemoving`                  | Saat pemain keluar, data dihapus dari memori |
+1. Klik `ServerScriptService` → `Insert Object` → `Script`.
+2. Isi kodenya:
 
----
+```lua
+local remote = game.ReplicatedStorage:WaitForChild("MakanBuahEvent")
+local buahPemain = {}  -- Data penyimpanan buah
 
-## 🧪 Coba Tes
+remote.OnServerEvent:Connect(function(player, namaBuah)
+	buahPemain[player.UserId] = namaBuah
+	print(player.Name .. " makan buah: " .. namaBuah)
+end)
 
-1. Jalankan game di Roblox Studio (Play).
-2. Lihat di **Output**:
-   - Akan muncul nama pemain dan buah yang dimiliki.
-3. Coba ganti `"Flame Fruit"` jadi buah lain, misalnya `"Ice Fruit"` atau `"Magma Fruit"`.
+-- Tambahkan juga saat pemain keluar
+game.Players.PlayerRemoving:Connect(function(player)
+	buahPemain[player.UserId] = nil
+end)
 
----
-
-## 🧠 Pengetahuan Tambahan
-
-- Data ini **belum tersimpan** permanen.
-- Artinya: Kalau keluar game, datanya hilang.
-- Nanti di pelajaran lanjutan, kita akan pakai **DataStore** untuk menyimpan data permanen.
+```
 
 ---
 
-## 💡 Bonus Latihan
+## 🧪 Tes Yuk!
 
-1. Buat RemoteEvent untuk meminta nama buah pemain.
-2. Tambahkan command di chat, misalnya: /buahku → tampilkan buah pemain.
-   Contoh Kode
+1. Jalankan game (`Play`).
+2. Klik tombol **"Makan Buah"**.
+3. Lihat di Output → muncul:
 
-   ```lua
-   game.Players.PlayerAdded:Connect(function(player)
-   	player.Chatted:Connect(function(pesan)
-   		if pesan == "/buahku" then
-   			local buah = buahPemain[player.UserId]
-   			if buah then
-   				print("Buah kamu: " .. buah)
-   			end
-   		end
-   	end)
-   end)
+```csharp
+[Nama Pemain] makan buah: Flame Fruit
+```
 
-   ```
+4. Coba ganti tulisan di `NamaBuahLabel` jadi "Ice Fruit", klik lagi.
+
+---
+
+## 🎁 Latihan Tambahan
+
+🔄 Buat beberapa tombol buah:
+
+- Tombol "Flame"
+- Tombol "Ice"
+- Tombol "Lightning"
+
+Setiap tombol ubah isi `NamaBuahLabel`, lalu klik "Makan".
+👀 Tambahkan `TextLabel` untuk menunjukkan “Buah Kamu Sekarang: ...”
 
 ---
 
 ## ✅ Kamu Sudah Bisa...
 
-- Simpan info penting di server.
-- Hubungkan data ke UserId pemain.
-- Bikin sistem awal untuk data “buah”.
+- Kirim info dari Client ke Server pakai RemoteEvent
+- Kirim **data penting** (seperti nama buah)
+- Simpan buah yang dimakan pemain!
 
-Mantap! Sekarang kamu bisa bikin sistem pemain yang punya item khusus seperti buah 🔥❄️🌪️
+Keren! Ini bisa jadi awal untuk sistem skill atau jurus. 💥
 
-➡️ Lanjut ke [Pertemuan 10 - RemoteEvent untuk makan buah](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_10)
+➡️ Lanjut ke [Pertemuan 11 - Gunakan skill dengan tombol (InputBegan)](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_11)
+
+```
+
+```
