@@ -117,7 +117,3 @@ Setiap tombol ubah isi `NamaBuahLabel`, lalu klik "Makan".
 Keren! Ini bisa jadi awal untuk sistem skill atau jurus. 💥
 
 ➡️ Lanjut ke [Pertemuan 11 - Gunakan skill dengan tombol (InputBegan)](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_11)
-
-```
-
-```
