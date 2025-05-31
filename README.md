@@ -1,126 +1,111 @@
-# ⚔️ Meeting 11: Gunakan Skill dengan Tombol (InputBegan)
+# 💥 Meeting 12: Buat Efek Serangan Buah (Part dan Animasi Sederhana)
 
 ## 🎯 Tujuan
 
-- Belajar cara mendeteksi **tombol keyboard ditekan**.
-- Menjalankan **skill buah** saat pemain tekan tombol.
-- Menghubungkan buah yang dimiliki pemain ke aksi tertentu.
+- Membuat **efek visual** saat jurus digunakan.
+- Menggunakan **Part** dan **animasi sederhana**.
+- Menambahkan sedikit **keajaiban visual** ke jurus!
 
 ---
 
-## 💡 Cerita Game
+## 📖 Cerita Game
 
-Misalnya kamu sudah makan "Flame Fruit", lalu kamu tekan tombol **Z** → Boom! Bola api keluar! 🔥
+Kamu sudah bisa pakai jurus dengan tombol Z (Meeting 11). Tapi... jurusnya cuma bola yang muncul. Sekarang kita bikin efeknya lebih keren!
 
-Kita akan buat hal keren seperti itu hari ini!
-
----
-
-## 📦 Yang Dibutuhkan
-
-- RemoteEvent: `GunakanSkillEvent`
-- Data buah pemain (dari meeting sebelumnya)
-- LocalScript untuk cek tombol ditekan
-- Script Server untuk keluarkan efek/jurus
+Contoh: Saat pakai Flame Fruit, muncul bola api yang meluncur ke depan dengan cahaya menyala 🔥✨
 
 ---
 
-## 🔁 Langkah 1: Siapkan RemoteEvent
+## 🔥 Langkah 1: Script Jurus dengan Efek
 
-1. Klik `ReplicatedStorage` → `Insert Object` → `RemoteEvent`
-2. Ganti nama: `GunakanSkillEvent`
+Buka script yang ada di `ServerScriptService` dari Meeting 11. Kita ubah bagian `if tombol == "Z"` supaya jadi lebih menarik:
 
----
-
-## 🖥️ Langkah 2: Buat LocalScript di `StarterPlayerScripts`
-
-1. Klik `StarterPlayer > StarterPlayerScripts` → `Insert Object` → `LocalScript`
-2. Tulis ini:
+### ✨ Ganti dengan ini:
 
 ```lua
-local UserInputService = game:GetService("UserInputService")
-local remote = game.ReplicatedStorage:WaitForChild("GunakanSkillEvent")
+if tombol == "Z" and buah == "Flame Fruit" then
+	local bolaApi = Instance.new("Part")
+	bolaApi.Shape = Enum.PartType.Ball
+	bolaApi.BrickColor = BrickColor.new("Bright orange")
+	bolaApi.Material = Enum.Material.Neon
+	bolaApi.Size = Vector3.new(2,2,2)
+	bolaApi.Anchored = false
+	bolaApi.CanCollide = false
+	bolaApi.Position = player.Character.Head.Position + player.Character.Head.CFrame.LookVector * 3
+	bolaApi.Parent = workspace
 
-UserInputService.InputBegan:Connect(function(input, isTyping)
-	if isTyping then return end  -- Kalau sedang mengetik chat, abaikan
+	-- Tambahkan cahaya
+	local light = Instance.new("PointLight")
+	light.Brightness = 3
+	light.Range = 8
+	light.Color = Color3.new(1, 0.4, 0)
+	light.Parent = bolaApi
 
-	if input.KeyCode == Enum.KeyCode.Z then
-		print("Tombol Z ditekan!")
-		remote:FireServer("Z")  -- Kirim ke server: Tombol apa yang ditekan
+	-- Tambahkan gerakan
+	local bodyVelocity = Instance.new("BodyVelocity")
+	bodyVelocity.Velocity = player.Character.Head.CFrame.LookVector * 60
+	bodyVelocity.Parent = bolaApi
+
+	-- Hapus setelah 3 detik
+	game.Debris:AddItem(bolaApi, 3)
+end
+```
+
+---
+
+## 🎬 Bonus: Efek Animasi Sederhana
+
+Kita bisa buat bola api berputar biar makin keren.
+Tambahkan ini di bawah `bolaApi.Parent = workspace`:
+
+```lua
+-- Putar bola terus-menerus
+task.spawn(function()
+	while bolaApi and bolaApi.Parent do
+		bolaApi.Orientation += Vector3.new(0, 10, 0)
+		wait(0.05)
 	end
 end)
 ```
 
 ---
 
-## 🛡️ Langkah 3: Script Server di `ServerScriptService`
+## 💡 Mau Ganti Jadi Es?
 
-1. Buat Script baru di `ServerScriptService`.
-2. Isi:
+Coba ubah warna dan nama buah:
 
 ```lua
-local remote = game.ReplicatedStorage:WaitForChild("GunakanSkillEvent")
-local buahPemain = {}  -- Buah yang dimiliki pemain
-
-game.Players.PlayerAdded:Connect(function(player)
-	buahPemain[player.UserId] = "Flame Fruit"  -- Contoh: buah awal
-end)
-
-game.Players.PlayerRemoving:Connect(function(player)
-	buahPemain[player.UserId] = nil
-end)
-
-remote.OnServerEvent:Connect(function(player, tombol)
-	local buah = buahPemain[player.UserId]
-	print(player.Name .. " menekan " .. tombol .. " dengan buah " .. buah)
-
-	if tombol == "Z" and buah == "Flame Fruit" then
-		-- Keluarkan jurus api
-		local bolaApi = Instance.new("Part")
-		bolaApi.Shape = Enum.PartType.Ball
-		bolaApi.BrickColor = BrickColor.new("Bright orange")
-		bolaApi.Material = Enum.Material.Neon
-		bolaApi.Size = Vector3.new(2,2,2)
-		bolaApi.Anchored = false
-		bolaApi.CanCollide = false
-		bolaApi.Position = player.Character.Head.Position + player.Character.Head.CFrame.LookVector * 3
-		bolaApi.Parent = workspace
-
-		local bodyVelocity = Instance.new("BodyVelocity")
-		bodyVelocity.Velocity = player.Character.Head.CFrame.LookVector * 50
-		bodyVelocity.Parent = bolaApi
-
-		game.Debris:AddItem(bolaApi, 3)  -- Hapus bola setelah 3 detik
-	end
-end)
+if tombol == "Z" and buah == "Ice Fruit" then
+	bolaApi.BrickColor = BrickColor.new("Toothpaste")
+	light.Color = Color3.new(0.6, 0.9, 1)
+end
 ```
 
 ---
 
-## 🧪 Tes Yuk!
+## 🧪 Coba Tes!
 
-1. Jalankan game (`Play`).
-2. Tekan tombol **Z** → Bola api muncul di depan karakter.
-3. Coba ganti `buahPemain[...] = "Flame Fruit" jadi "Ice Fruit"` lalu buat jurus yang berbeda!
+1. Jalankan game.
+2. Tekan tombol Z.
+3. Bola api muncul, terang, dan terbang ke depan 🔥🌀
+4. Ganti nama buah jadi `"Ice Fruit"` → efek jadi warna biru ❄️
 
 ---
 
-## 🧠 Tips Tambahan
+## 🎁 Tantangan Kreatif
 
-- Kamu bisa buat tombol lain seperti:
-  - X → Skill kedua
-  - C → Skill ketiga
-- Tambahkan efek suara, cahaya, atau animasi biar makin keren!
+- Buat efek **petir** untuk "Lightning Fruit".
+- Tambahkan **ledakan** kecil saat bola menyentuh sesuatu.
+- Gunakan **SoundEffect** biar makin hidup.
 
 ---
 
 ## ✅ Hari Ini Kamu Sudah Bisa...
 
-- Deteksi tombol keyboard (InputBegan)
-- Kirim info tombol ke server
-- Jalankan jurus dari buah tertentu
-- Simulasi skill seperti di game Blox Fruits!
+- Membuat **efek visual jurus**.
+- Menambahkan **cahaya & animasi sederhana**.
+- Membuat jurus yang terasa lebih “hidup”!
 
-🔥 Keren banget! Sekarang game kamu udah mulai punya jurus kayak ninja atau pahlawan!
+Keren banget! 🎉 Game kamu sekarang punya jurus yang benar-benar kelihatan **epik**!
 
-➡️ Lanjut ke [Pertemuan 12 - Buat efek serangan buah (part, animasi sederhana)](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_12)
+➡️ Lanjut ke [Pertemuan 13 - Deteksi tabrakan serangan ke musuh](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_13)
