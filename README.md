@@ -1,82 +1,98 @@
-# 🍇 Meeting 10: RemoteEvent untuk Makan Buah Sekarang
+# ⚔️ Meeting 11: Gunakan Skill dengan Tombol (InputBegan)
 
 ## 🎯 Tujuan
 
-- Membuat **tombol GUI** untuk “makan buah”.
-- Kirim pesan ke Server pakai **RemoteEvent**.
-- Server menyimpan buah yang dimakan oleh pemain.
+- Belajar cara mendeteksi **tombol keyboard ditekan**.
+- Menjalankan **skill buah** saat pemain tekan tombol.
+- Menghubungkan buah yang dimiliki pemain ke aksi tertentu.
 
 ---
 
-## 🧠 Cerita Game
+## 💡 Cerita Game
 
-Bayangkan kamu nemu buah seperti:
+Misalnya kamu sudah makan "Flame Fruit", lalu kamu tekan tombol **Z** → Boom! Bola api keluar! 🔥
 
-- 🔥 Flame Fruit
-- ❄️ Ice Fruit
-- ⚡ Lightning Fruit
-
-Lalu kamu klik tombol “Makan” → Server tahu kamu makan buah itu → dan menyimpannya. Gampang kan?
+Kita akan buat hal keren seperti itu hari ini!
 
 ---
 
-## 🛠️ Langkah A: RemoteEvent
+## 📦 Yang Dibutuhkan
 
-1. Klik `ReplicatedStorage` → `Insert Object` → `RemoteEvent`.
-2. Ganti nama: `MakanBuahEvent`.
-
----
-
-## 🖱️ Langkah B: Buat GUI Makan Buah
-
-1. Klik `StarterGui` → `Insert Object` → `ScreenGui`.
-2. Di dalamnya, buat:
-   - **TextButton** → nama: `MakanButton`
-   - **TextLabel** → nama: `NamaBuahLabel`
-
-Atur seperti ini:
-
-- `TextButton.Text = "Makan Buah"`
-- `TextLabel.Text = "Flame Fruit"` _(ini contoh buah yang mau dimakan)_
+- RemoteEvent: `GunakanSkillEvent`
+- Data buah pemain (dari meeting sebelumnya)
+- LocalScript untuk cek tombol ditekan
+- Script Server untuk keluarkan efek/jurus
 
 ---
 
-## 💻 Langkah C: LocalScript di Tombol
+## 🔁 Langkah 1: Siapkan RemoteEvent
 
-Klik kanan `MakanButton` → `Insert Object` → `LocalScript`. Lalu isi:
+1. Klik `ReplicatedStorage` → `Insert Object` → `RemoteEvent`
+2. Ganti nama: `GunakanSkillEvent`
+
+---
+
+## 🖥️ Langkah 2: Buat LocalScript di `StarterPlayerScripts`
+
+1. Klik `StarterPlayer > StarterPlayerScripts` → `Insert Object` → `LocalScript`
+2. Tulis ini:
 
 ```lua
-local tombol = script.Parent
-local label = tombol.Parent:WaitForChild("NamaBuahLabel")
-local remote = game.ReplicatedStorage:WaitForChild("MakanBuahEvent")
+local UserInputService = game:GetService("UserInputService")
+local remote = game.ReplicatedStorage:WaitForChild("GunakanSkillEvent")
 
-tombol.MouseButton1Click:Connect(function()
-	local namaBuah = label.Text
-	remote:FireServer(namaBuah)
+UserInputService.InputBegan:Connect(function(input, isTyping)
+	if isTyping then return end  -- Kalau sedang mengetik chat, abaikan
+
+	if input.KeyCode == Enum.KeyCode.Z then
+		print("Tombol Z ditekan!")
+		remote:FireServer("Z")  -- Kirim ke server: Tombol apa yang ditekan
+	end
 end)
 ```
 
 ---
 
-## 🔐 Langkah D: Script di Server
+## 🛡️ Langkah 3: Script Server di `ServerScriptService`
 
-1. Klik `ServerScriptService` → `Insert Object` → `Script`.
-2. Isi kodenya:
+1. Buat Script baru di `ServerScriptService`.
+2. Isi:
 
 ```lua
-local remote = game.ReplicatedStorage:WaitForChild("MakanBuahEvent")
-local buahPemain = {}  -- Data penyimpanan buah
+local remote = game.ReplicatedStorage:WaitForChild("GunakanSkillEvent")
+local buahPemain = {}  -- Buah yang dimiliki pemain
 
-remote.OnServerEvent:Connect(function(player, namaBuah)
-	buahPemain[player.UserId] = namaBuah
-	print(player.Name .. " makan buah: " .. namaBuah)
+game.Players.PlayerAdded:Connect(function(player)
+	buahPemain[player.UserId] = "Flame Fruit"  -- Contoh: buah awal
 end)
 
--- Tambahkan juga saat pemain keluar
 game.Players.PlayerRemoving:Connect(function(player)
 	buahPemain[player.UserId] = nil
 end)
 
+remote.OnServerEvent:Connect(function(player, tombol)
+	local buah = buahPemain[player.UserId]
+	print(player.Name .. " menekan " .. tombol .. " dengan buah " .. buah)
+
+	if tombol == "Z" and buah == "Flame Fruit" then
+		-- Keluarkan jurus api
+		local bolaApi = Instance.new("Part")
+		bolaApi.Shape = Enum.PartType.Ball
+		bolaApi.BrickColor = BrickColor.new("Bright orange")
+		bolaApi.Material = Enum.Material.Neon
+		bolaApi.Size = Vector3.new(2,2,2)
+		bolaApi.Anchored = false
+		bolaApi.CanCollide = false
+		bolaApi.Position = player.Character.Head.Position + player.Character.Head.CFrame.LookVector * 3
+		bolaApi.Parent = workspace
+
+		local bodyVelocity = Instance.new("BodyVelocity")
+		bodyVelocity.Velocity = player.Character.Head.CFrame.LookVector * 50
+		bodyVelocity.Parent = bolaApi
+
+		game.Debris:AddItem(bolaApi, 3)  -- Hapus bola setelah 3 detik
+	end
+end)
 ```
 
 ---
@@ -84,40 +100,27 @@ end)
 ## 🧪 Tes Yuk!
 
 1. Jalankan game (`Play`).
-2. Klik tombol **"Makan Buah"**.
-3. Lihat di Output → muncul:
-
-```csharp
-[Nama Pemain] makan buah: Flame Fruit
-```
-
-4. Coba ganti tulisan di `NamaBuahLabel` jadi "Ice Fruit", klik lagi.
+2. Tekan tombol **Z** → Bola api muncul di depan karakter.
+3. Coba ganti `buahPemain[...] = "Flame Fruit" jadi "Ice Fruit"` lalu buat jurus yang berbeda!
 
 ---
 
-## 🎁 Latihan Tambahan
+## 🧠 Tips Tambahan
 
-🔄 Buat beberapa tombol buah:
-
-- Tombol "Flame"
-- Tombol "Ice"
-- Tombol "Lightning"
-
-Setiap tombol ubah isi `NamaBuahLabel`, lalu klik "Makan".
-👀 Tambahkan `TextLabel` untuk menunjukkan “Buah Kamu Sekarang: ...”
+- Kamu bisa buat tombol lain seperti:
+  - X → Skill kedua
+  - C → Skill ketiga
+- Tambahkan efek suara, cahaya, atau animasi biar makin keren!
 
 ---
 
-## ✅ Kamu Sudah Bisa...
+## ✅ Hari Ini Kamu Sudah Bisa...
 
-- Kirim info dari Client ke Server pakai RemoteEvent
-- Kirim **data penting** (seperti nama buah)
-- Simpan buah yang dimakan pemain!
+- Deteksi tombol keyboard (InputBegan)
+- Kirim info tombol ke server
+- Jalankan jurus dari buah tertentu
+- Simulasi skill seperti di game Blox Fruits!
 
-Keren! Ini bisa jadi awal untuk sistem skill atau jurus. 💥
+🔥 Keren banget! Sekarang game kamu udah mulai punya jurus kayak ninja atau pahlawan!
 
-➡️ Lanjut ke [Pertemuan 11 - Gunakan skill dengan tombol (InputBegan)](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_11)
-
-```
-
-```
+➡️ Lanjut ke [Pertemuan 12 - Buat efek serangan buah (part, animasi sederhana)](https://github.com/ihksanghazi/ScriptingRobloxTutorial/tree/Pertemuan_12)
